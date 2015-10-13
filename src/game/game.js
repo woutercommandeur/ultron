@@ -34,7 +34,7 @@ function Game () {
     }
   );
 
-  this.gameloop.setend(
+  this.gameloop.setEnd(
     function(fps, panic) {
       self.end(fps. panic);
       self.statestack.end(fps, panic);
