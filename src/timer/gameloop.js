@@ -89,13 +89,14 @@ GameLoop.prototype.setEnd = function(fun) {
 GameLoop.prototype.start = function() {
   if (!this.started) {
     this.started = true;
+    var self = this;
     this.rafHandle = request(function(timestamp) {
-      this.render(1);
-      this.running = true;
-      this.lastFrameTimeMs = timestamp;
-      this.lastFpsUpdate = timestamp;
-      this.framesThisSecond = 0;
-      this.rafHandle = request(this.animate.bind(this));
+      self.render(1);
+      self.running = true;
+      self.lastFrameTimeMs = timestamp;
+      self.lastFpsUpdate = timestamp;
+      self.framesThisSecond = 0;
+      self.rafHandle = request(self.boundAnimate);
     });
   }
   return this;
