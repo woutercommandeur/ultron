@@ -12,7 +12,7 @@ StateStack.prototype.begin = function (timestamp, frameDelta) {
     var depth = 0;
     var state = this.states.top(depth);
     while (state) {
-        if (state.begin(timestamp, frameDelta) ) {
+        if (!state.begin(timestamp, frameDelta) ) {
             state = this.states.top(++depth);
         } else {
             state = false;
@@ -24,7 +24,7 @@ StateStack.prototype.update = function (simulationTimestep) {
     var depth = 0;
     var state = this.states.top(depth);
     while (state) {
-        if (state.update(simulationTimestep)) {
+        if (!state.update(simulationTimestep)) {
             state = this.states.top(++depth);
         } else {
             state = false;
@@ -36,7 +36,7 @@ StateStack.prototype.render = function (percentageTimestepRemaining) {
     var depth = 0;
     var state = this.states.top(depth);
     while (state) {
-        if (state.render(percentageTimestepRemaining)) {
+        if (!state.render(percentageTimestepRemaining)) {
             state = this.states.top(++depth);
         } else {
             state = false;
@@ -48,7 +48,7 @@ StateStack.prototype.end = function (fps, panic) {
     var depth = 0;
     var state = this.states.top(depth);
     while (state) {
-        if (state.end(fps, panic)) {
+        if (!state.end(fps, panic)) {
             state = this.states.top(++depth);
         } else {
             state = false;
