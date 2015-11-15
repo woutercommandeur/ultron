@@ -218,7 +218,7 @@ Vector2.prototype.isEqualEpsilon = function(vec) {
 };
 
 Vector2.prototype.toString = function () {
-    return 'x:' + this.x + ', y:' + this.y;
+    return 'x: ' + this.x + ', y: ' + this.y;
 };
 
 Vector2.prototype.toArray = function () {

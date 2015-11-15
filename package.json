@@ -20,6 +20,7 @@
   "dependencies": {
     "delaunay-fast": "^1.0.1",
     "eventemitter3": "^1.1.1",
+    "makr": "^2.1.1",
     "request-frame": "^1.0.3",
     "vkey": "^1.0.0"
   },
