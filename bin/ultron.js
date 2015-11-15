@@ -502,7 +502,7 @@ if ('undefined' !== typeof module) {
 /**
  *  request-frame - requestAnimationFrame & cancelAnimationFrame polyfill for
  *   optimal cross-browser development.
- *    Version:  v1.2.3
+ *    Version:  v1.4.0
  *     License:  MIT
  *      Copyright Julien Etienne 2015 All Rights Reserved.
  *        github:  https://github.com/julienetie/request-frame
@@ -753,7 +753,7 @@ window.requestFrame = requestFrame;
 }
 /* global -module, -exports, -define */
 
-}(window));
+}((typeof window === "undefined" ? {} : window)));
 
 },{}],4:[function(require,module,exports){
 var ua = typeof window !== 'undefined' ? window.navigator.userAgent : ''
@@ -894,6 +894,211 @@ for(i = 112; i < 136; ++i) {
 }
 
 },{}],5:[function(require,module,exports){
+'use strict';
+
+var StateStack = require('./statestack');
+var GameLoop = require('../timer/gameloop');
+var NOOP = function() {};
+
+exports = module.exports = Game;
+
+function Game () {
+  this.states = {};
+  this.statestack = new StateStack();
+  this.gameloop = new GameLoop();
+
+  var self = this;
+
+  this.gameloop.setBegin(
+    function(timestamp, frameDelta) {
+      self.begin(timestamp, frameDelta);
+      self.statestack.begin(timestamp, frameDelta);
+    }
+  );
+
+  this.gameloop.setUpdate(
+    function(simulationTimestep) {
+      self.update(simulationTimestep);
+      self.statestack.update(simulationTimestep);
+    }
+  );
+
+  this.gameloop.setRender(
+    function(percentageTimestepRemaining) {
+      self.render(percentageTimestepRemaining);
+      self.statestack.render(percentageTimestepRemaining);
+    }
+  );
+
+  this.gameloop.setEnd(
+    function(fps, panic) {
+      self.end(fps. panic);
+      self.statestack.end(fps, panic);
+    }
+  );
+
+}
+
+/* GAMELOOP HANDLING */
+
+Game.prototype.start = function() {
+  return this.gameloop.start();
+};
+
+Game.prototype.stop = function() {
+  return this.gameloop.stop();
+};
+
+Game.prototype.begin = NOOP;
+Game.prototype.end = NOOP;
+Game.prototype.update = NOOP;
+Game.prototype.render = NOOP;
+
+
+
+/* STATE HANDLING */
+
+Game.prototype.addState = function(state) {
+  state.game = this;
+  this.states[state.name] = state;
+  return this;
+};
+
+Game.prototype.startState = function (stateName) {
+  var state = this.states[stateName];
+  if (!state) {
+    return;
+  }
+  return this.statestack.push(this.states[stateName]);
+};
+
+Game.prototype.stopState = function (stateName) {
+  var state = this.states[stateName];
+  if (!state) {
+    return;
+  }
+  return this.statestack.pop(state);
+};
+
+},{"../timer/gameloop":34,"./statestack":9}],6:[function(require,module,exports){
+module.exports = {
+  Game: require('./game'),
+  State: require('./state'),
+  StateList: require('./statelist'),
+  StateStack: require('./statestack')
+};
+
+},{"./game":5,"./state":7,"./statelist":8,"./statestack":9}],7:[function(require,module,exports){
+'use strict';
+
+exports = module.exports = State;
+
+var NOOP = function() {};
+
+function State ( name ) {
+    this.name = name;
+}
+
+State.prototype.begin = NOOP;
+State.prototype.update = NOOP;
+State.prototype.render = NOOP;
+State.prototype.end = NOOP;
+State.prototype.onEnter = NOOP;
+State.prototype.onExit = NOOP;
+
+},{}],8:[function(require,module,exports){
+'use strict';
+
+exports = module.exports = StateList;
+
+function StateList() {
+    this.states = [];
+}
+
+StateList.prototype.pop = function () {
+    return this.states.pop();
+};
+
+StateList.prototype.push = function ( state ) {
+    return this.states.push(state);
+};
+
+StateList.prototype.top = function (depth) {
+    depth = depth || 0;
+    return this.states[this.states.length-(depth+1)];
+};
+
+},{}],9:[function(require,module,exports){
+'use strict';
+
+var StateList = require('./statelist');
+
+exports = module.exports = StateStack;
+
+function StateStack() {
+    this.states = new StateList();
+}
+
+StateStack.prototype.begin = function (timestamp, frameDelta) {
+    var depth = 0;
+    var state = this.states.top(depth);
+    while (state) {
+        if (!state.begin(timestamp, frameDelta) ) {
+            state = this.states.top(++depth);
+        } else {
+            state = false;
+        }
+    }
+};
+
+StateStack.prototype.update = function (simulationTimestep) {
+    var depth = 0;
+    var state = this.states.top(depth);
+    while (state) {
+        if (!state.update(simulationTimestep)) {
+            state = this.states.top(++depth);
+        } else {
+            state = false;
+        }
+    }
+};
+
+StateStack.prototype.render = function (percentageTimestepRemaining) {
+    var depth = 0;
+    var state = this.states.top(depth);
+    while (state) {
+        if (!state.render(percentageTimestepRemaining)) {
+            state = this.states.top(++depth);
+        } else {
+            state = false;
+        }
+    }
+};
+
+StateStack.prototype.end = function (fps, panic) {
+    var depth = 0;
+    var state = this.states.top(depth);
+    while (state) {
+        if (!state.end(fps, panic)) {
+            state = this.states.top(++depth);
+        } else {
+            state = false;
+        }
+    }
+};
+
+StateStack.prototype.pop = function () {
+    var state = this.states.pop();
+    state.onExit();
+    return state;
+};
+
+StateStack.prototype.push = function (state) {
+    this.states.push(state);
+    return state.onEnter();
+};
+
+},{"./statelist":8}],10:[function(require,module,exports){
 'use strict';
 
 var gpcas = gpcas || {};
@@ -4106,7 +4311,7 @@ gpcas.geometry.WeilerAtherton.prototype.merge = function(p1,p2) {
 	p2=p2.clone();
 }
 
-},{}],6:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 'use strict';
 
 /*jshint -W072 */
@@ -4147,7 +4352,7 @@ Cell.prototype.insert = function(item) {
 
 exports = module.exports = Cell;
 
-},{}],7:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 'use strict';
 
 var Cell = require('./cell');
@@ -4218,13 +4423,13 @@ Grid.prototype.retrieve = function(item) {
 
 exports = module.exports = Grid;
 
-},{"../../linkedlist/doublylinkedlist":24,"./cell":6}],8:[function(require,module,exports){
+},{"../../linkedlist/doublylinkedlist":29,"./cell":11}],13:[function(require,module,exports){
 module.exports = {
   Grid: require('./grid'),
   Cell: require('./cell')
 };
 
-},{"./cell":6,"./grid":7}],9:[function(require,module,exports){
+},{"./cell":11,"./grid":12}],14:[function(require,module,exports){
 module.exports = {
   Vector2: require('./vector2'),
   LineSegment2: require('./linesegment2'),
@@ -4238,7 +4443,7 @@ module.exports = {
   QuadTree: require('./quadtree')
 };
 
-},{"./gpc":5,"./grid":8,"./linesegment2":10,"./polygon2":11,"./quadtree":13,"./regularpolygon2":16,"./triangle2":17,"./vector2":18,"./visibilitypolygon":19}],10:[function(require,module,exports){
+},{"./gpc":10,"./grid":13,"./linesegment2":15,"./polygon2":16,"./quadtree":18,"./regularpolygon2":21,"./triangle2":22,"./vector2":23,"./visibilitypolygon":24}],15:[function(require,module,exports){
 'use strict';
 
 /* jshint -W064 */
@@ -4357,7 +4562,7 @@ LineSegment2.prototype.inverse = function() {
 
 /* jshint +W064 */
 
-},{"./vector2":18}],11:[function(require,module,exports){
+},{"./vector2":23}],16:[function(require,module,exports){
 'use strict';
 
 /* jshint -W064 */
@@ -4602,7 +4807,7 @@ Polygon2.prototype.toArray = function ()
 
 /* jshint +W064 */
 
-},{"./linesegment2":10,"./vector2":18}],12:[function(require,module,exports){
+},{"./linesegment2":15,"./vector2":23}],17:[function(require,module,exports){
 'use strict';
 
 var PointNode = require('./pointnode');
@@ -4750,14 +4955,14 @@ BoundsNode.prototype.clear = function () {
 
 exports = module.exports = BoundsNode;
 
-},{"./pointnode":14}],13:[function(require,module,exports){
+},{"./pointnode":19}],18:[function(require,module,exports){
 module.exports = {
   QuadTree: require('./quadtree'),
   PointNode: require('./pointnode'),
   BoundsNode: require('./boundsnode')  
 };
 
-},{"./boundsnode":12,"./pointnode":14,"./quadtree":15}],14:[function(require,module,exports){
+},{"./boundsnode":17,"./pointnode":19,"./quadtree":20}],19:[function(require,module,exports){
 'use strict';
 
 function PointNode(bounds, depth, maxDepth, maxChildren) {
@@ -4928,7 +5133,7 @@ PointNode.prototype.clear = function () {
 
 exports = module.exports = PointNode;
 
-},{}],15:[function(require,module,exports){
+},{}],20:[function(require,module,exports){
 'use strict';
 
 var PointNode = require('./pointnode'),
@@ -5007,7 +5212,7 @@ QuadTree.prototype.retrieve = function (item) {
 
 exports = module.exports = QuadTree;
 
-},{"./boundsnode":12,"./pointnode":14}],16:[function(require,module,exports){
+},{"./boundsnode":17,"./pointnode":19}],21:[function(require,module,exports){
 'use strict';
 
 /* jshint -W064 */
@@ -5036,7 +5241,7 @@ function RegularPolygon2 (radius,sides, center)
 }
 /* jshint +W064 */
 
-},{"./polygon2":11,"./vector2":18}],17:[function(require,module,exports){
+},{"./polygon2":16,"./vector2":23}],22:[function(require,module,exports){
 'use strict';
 
 /* jshint -W064 */
@@ -5151,7 +5356,7 @@ Triangle2.prototype.inCircumcircle = function(v) {
 };
 /* jshint +W064 */
 
-},{}],18:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 /* jshint -W064 */
 
@@ -5392,7 +5597,7 @@ function degrees2radian (deg) {
 }
 /* jshint +W064 */
 
-},{}],19:[function(require,module,exports){
+},{}],24:[function(require,module,exports){
 'use strict';
 /* jshint -W064 */
 
@@ -5669,7 +5874,7 @@ VisibilityPolygon.prototype.reset = function ()
 };
 /* jshint +W064 */
 
-},{"./linesegment2":10,"./polygon2":11,"./vector2":18}],20:[function(require,module,exports){
+},{"./linesegment2":15,"./polygon2":16,"./vector2":23}],25:[function(require,module,exports){
 (function (global){
 var core = {};
 
@@ -5679,6 +5884,7 @@ core.linkedlist = require('./linkedlist');
 core.procedural = require('./procedural');
 core.timer = require('./timer');
 core.input = require('./input');
+core.game = require('./game');
 
 module.exports = core;
 
@@ -5686,12 +5892,12 @@ global.ULTRON = core;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 
-},{"./geometry":9,"./input":21,"./linkedlist":25,"./procedural":28,"./timer":30}],21:[function(require,module,exports){
+},{"./game":6,"./geometry":14,"./input":26,"./linkedlist":30,"./procedural":33,"./timer":35}],26:[function(require,module,exports){
 module.exports = {
   Unified: require('./unified')
 };
 
-},{"./unified":23}],22:[function(require,module,exports){
+},{"./unified":28}],27:[function(require,module,exports){
 //Adapted from here: https://developer.mozilla.org/en-US/docs/Web/Reference/Events/wheel?redirectlocale=en-US&redirectslug=DOM%2FMozilla_event_reference%2Fwheel
 
 // taken from game-shell
@@ -5754,7 +5960,7 @@ module.exports = function( elem, callback, useCapture ) {
   }
 };
 
-},{}],23:[function(require,module,exports){
+},{}],28:[function(require,module,exports){
 'use strict';
 
 // taken from https://github.com/andyhall/game-inputs
@@ -6123,7 +6329,7 @@ function XOR(a,b) {
   return a ? !b : b;
 }
 
-},{"./mousewheel-polyfill":22,"eventemitter3":2,"request-frame":3,"vkey":4}],24:[function(require,module,exports){
+},{"./mousewheel-polyfill":27,"eventemitter3":2,"request-frame":3,"vkey":4}],29:[function(require,module,exports){
 /*
  * Doubly Linked List implementation in JavaScript
  * Copyright (c) 2009 Nicholas C. Zakas
@@ -6400,12 +6606,12 @@ DoublyLinkedList.prototype = {
 
 exports = module.exports = DoublyLinkedList;
 
-},{}],25:[function(require,module,exports){
+},{}],30:[function(require,module,exports){
 module.exports = {
   DoublyLinkedList: require('./doublylinkedlist')
 };
 
-},{"./doublylinkedlist":24}],26:[function(require,module,exports){
+},{"./doublylinkedlist":29}],31:[function(require,module,exports){
 'use strict';
 
 /* jshint -W064 */
@@ -6641,7 +6847,7 @@ Building.prototype.translate = function (vec)
 
 /* jshint +W064 */
 
-},{"../geometry/gpc":5,"../geometry/linesegment2":10,"../geometry/polygon2":11,"../geometry/regularpolygon2":16,"../geometry/vector2":18,"./graph":27,"delaunay-fast":1}],27:[function(require,module,exports){
+},{"../geometry/gpc":10,"../geometry/linesegment2":15,"../geometry/polygon2":16,"../geometry/regularpolygon2":21,"../geometry/vector2":23,"./graph":32,"delaunay-fast":1}],32:[function(require,module,exports){
 'use strict';
 
 
@@ -6723,13 +6929,13 @@ var Graph = function() {
 
 module.exports = Graph;
 
-},{}],28:[function(require,module,exports){
+},{}],33:[function(require,module,exports){
 module.exports = {
   Graph: require('./graph'),
   Building: require('./building')
 };
 
-},{"./building":26,"./graph":27}],29:[function(require,module,exports){
+},{"./building":31,"./graph":32}],34:[function(require,module,exports){
 'use strict';
 
 var requestFrame = require('request-frame');
@@ -6821,13 +7027,14 @@ GameLoop.prototype.setEnd = function(fun) {
 GameLoop.prototype.start = function() {
   if (!this.started) {
     this.started = true;
+    var self = this;
     this.rafHandle = request(function(timestamp) {
-      this.render(1);
-      this.running = true;
-      this.lastFrameTimeMs = timestamp;
-      this.lastFpsUpdate = timestamp;
-      this.framesThisSecond = 0;
-      this.rafHandle = request(this.animate.bind(this));
+      self.render(1);
+      self.running = true;
+      self.lastFrameTimeMs = timestamp;
+      self.lastFpsUpdate = timestamp;
+      self.framesThisSecond = 0;
+      self.rafHandle = request(self.boundAnimate);
     });
   }
   return this;
@@ -6888,12 +7095,12 @@ GameLoop.prototype.animate = function animate(timestamp) {
     this.rafHandle = request(this.boundAnimate);
 };
 
-},{"request-frame":3}],30:[function(require,module,exports){
+},{"request-frame":3}],35:[function(require,module,exports){
 module.exports = {
   GameLoop: require('./gameloop')
 };
 
-},{"./gameloop":29}]},{},[20])(20)
+},{"./gameloop":34}]},{},[25])(25)
 });
 
 

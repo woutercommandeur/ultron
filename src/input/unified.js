@@ -249,7 +249,7 @@ function handleBindingEvent(binding, wasDown, inputs, ev) {
   var currstate = inputs.state[binding];
   if ( XOR(currstate, ct) ) {
     var emitter = wasDown ? inputs.down : inputs.up;
-    emitter.emit( binding, ev );
+    emitter.emit(binding, binding, ev);
   }
   inputs.state[binding] = !!ct;
 }
