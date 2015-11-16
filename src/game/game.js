@@ -29,8 +29,9 @@ function Game () {
 
   this.gameloop.setRender(
     function(percentageTimestepRemaining) {
-      self.render(percentageTimestepRemaining);
+      // render -> game is last.
       self.statestack.render(percentageTimestepRemaining);
+      self.render(percentageTimestepRemaining);
     }
   );
 
@@ -65,6 +66,7 @@ Game.prototype.render = NOOP;
 Game.prototype.addState = function(state) {
   state.game = this;
   this.states[state.name] = state;
+  state.create();
   return this;
 };
 

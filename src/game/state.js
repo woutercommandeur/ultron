@@ -8,6 +8,7 @@ function State ( name ) {
     this.name = name;
 }
 
+State.prototype.create = NOOP;
 State.prototype.begin = NOOP;
 State.prototype.update = NOOP;
 State.prototype.render = NOOP;

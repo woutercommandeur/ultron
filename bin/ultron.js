@@ -925,8 +925,9 @@ function Game () {
 
   this.gameloop.setRender(
     function(percentageTimestepRemaining) {
-      self.render(percentageTimestepRemaining);
+      // render -> game is last.
       self.statestack.render(percentageTimestepRemaining);
+      self.render(percentageTimestepRemaining);
     }
   );
 
@@ -961,6 +962,7 @@ Game.prototype.render = NOOP;
 Game.prototype.addState = function(state) {
   state.game = this;
   this.states[state.name] = state;
+  state.create();
   return this;
 };
 
@@ -999,6 +1001,7 @@ function State ( name ) {
     this.name = name;
 }
 
+State.prototype.create = NOOP;
 State.prototype.begin = NOOP;
 State.prototype.update = NOOP;
 State.prototype.render = NOOP;
@@ -5577,7 +5580,7 @@ Vector2.prototype.isEqualEpsilon = function(vec) {
 };
 
 Vector2.prototype.toString = function () {
-    return 'x:' + this.x + ', y:' + this.y;
+    return 'x: ' + this.x + ', y: ' + this.y;
 };
 
 Vector2.prototype.toArray = function () {
