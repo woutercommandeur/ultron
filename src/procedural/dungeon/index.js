@@ -1,11 +1,11 @@
 'use strict';
 
-var Rectangle2 = require('../geometry/rectangle2');
-var Vector2 = require('../geometry/vector2');
-var LineSegment2 = require('../geometry/linesegment2');
-var gpc = require('../geometry/gpc');
+var Rectangle2 = require('../../geometry/rectangle2');
+var Vector2 = require('../../geometry/vector2');
+var LineSegment2 = require('../../geometry/linesegment2');
+var gpc = require('../../geometry/gpc');
 var Delaunay = require('delaunay-fast');
-var Graph = require('./graph');
+var Graph = require('../graph');
 
 
 exports = module.exports = Dungeon;

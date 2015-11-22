@@ -1,13 +1,13 @@
 'use strict';
 
 /* jshint -W064 */
-var RegularPolygon2 = require('../geometry/regularpolygon2');
-var Polygon2 = require('../geometry/polygon2');
-var Vector2 = require('../geometry/vector2');
-var LineSegment2 = require('../geometry/linesegment2');
-var gpc = require('../geometry/gpc');
+var RegularPolygon2 = require('../../geometry/regularpolygon2');
+var Polygon2 = require('../../geometry/polygon2');
+var Vector2 = require('../../geometry/vector2');
+var LineSegment2 = require('../../geometry/linesegment2');
+var gpc = require('../../geometry/gpc');
 var Delaunay = require('delaunay-fast');
-var Graph = require('./graph');
+var Graph = require('../graph');
 
 exports = module.exports = Building;
 
