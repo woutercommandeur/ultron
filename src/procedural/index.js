@@ -1,4 +1,5 @@
 module.exports = {
   Graph: require('./graph'),
-  Building: require('./building')
+  Building: require('./building'),
+  Dungeon: require('./dungeon')
 };
