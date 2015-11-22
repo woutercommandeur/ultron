@@ -10,10 +10,10 @@ function Rectangle2 (x, y, width, height) {
     if (!(this instanceof Rectangle2)) {
         var v = cache.pop();
         if (!v) {
-            v = new Rectangle2(x || 0, y || 0);
+            v = new Rectangle2(x || 0, y || 0, width || 0, height || 0);
             created++;
         } else {
-            v.set(x, y);
+            v.set(x, y, width, height);
         }
         return v;
     }
