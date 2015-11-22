@@ -49,7 +49,7 @@ Dungeon.prototype.addRoom = function()
   var w = this.chance.integer(this.sizeChance);
   var h = this.chance.integer(this.sizeChance);
 
-  var room = Rectangle2(x, y, w, h);
+  var room = Rectangle2(x - (w/2), y - (h/2), w, h);
   this.rooms.push(room);
 
   if (this.rooms.length == this.iterations ) {
