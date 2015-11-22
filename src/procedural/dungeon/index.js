@@ -44,8 +44,8 @@ Dungeon.prototype.addRoom = function()
   var t = 2*Math.PI*this.chance.floating(this.posChance);
   var u = this.chance.floating(this.posChance) + this.chance.floating(this.posChance);
   var r = ( u>1 ? 2-u : u );
-  var x = r*Math.cos(t);
-  var y = r*Math.sin(t);
+  var x = this.radius*r*Math.cos(t);
+  var y = this.radius*r*Math.sin(t);
   var w = this.chance.integer(this.sizeChance);
   var h = this.chance.integer(this.sizeChance);
 
