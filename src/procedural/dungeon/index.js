@@ -31,7 +31,7 @@ function Dungeon(chance, iterations, radius, minSide, maxSide)
 Dungeon.prototype.step = function()
 {
   switch(this.state) {
-    case: GENERATE_ROOMS;
+    case GENERATE_ROOMS:
       this.addRoom();
       break;
     default:
