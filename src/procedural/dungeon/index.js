@@ -52,7 +52,7 @@ Dungeon.prototype.addRoom = function()
   var room = Rectangle2(x, y, w, h);
   this.rooms.push(room);
 
-  if (this.rooms.length >= iterations ) {
+  if (this.rooms.length == this.iterations ) {
     this.state = EVADE_ROOMS;
   }
 };
