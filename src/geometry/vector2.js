@@ -133,6 +133,12 @@ Vector2.prototype.projectOnto = function (vec) {
     return this;
 };
 
+Vector2.prototype.setAngle = function(rad)
+{
+  var len = this.length();
+  this.x = Math.cos(rad) * len;
+  this.y = Math.sin(rad) * len;
+}
 
 Vector2.prototype.horizontalAngle = function () {
     return Math.atan2(this.y, this.x);
