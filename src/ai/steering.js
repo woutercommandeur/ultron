@@ -33,7 +33,7 @@ function wander(currentVelocity, wanderDistance, wanderRadius, wanderAngle)
   var force = currentVelocity.clone().normalize().multiplyScalar(wanderDistance);
   var displacement = Vector2(0,-1).multiplyScaler(wanderRadius).setAngle(wanderAngle);
   force = force.add(displacement);
-  displacement.free();  
+  displacement.free();
   return force; // force applied
 }
 
@@ -65,7 +65,7 @@ function pursuit(target, position, maxVelocity, currentVelocity, targetVelocity)
 
 function avoidance(target, position, velocity, maxAvoidAhead, maxVelocity, avoidanceForce)
 {
-  var tv = velocity.clone().normalize.multiplyScalar((maxAvoidAhead * velocity.length()) / maxVelocity);
+  var tv = velocity.clone().normalize().multiplyScalar((maxAvoidAhead * velocity.length()) / maxVelocity);
   var force = position.clone().add(tv).subtract(target).normalize().multiplyScalar(avoidanceForce);
   tv.free();
   return force;

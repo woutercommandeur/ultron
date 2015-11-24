@@ -53,6 +53,14 @@ Rectangle2.prototype.translate = function(vec) {
     return this;
 };
 
+Rectangle2.prototype.intersects = function (r) {
+  return !(this.x + this.width < r.x ||
+           this.y + this.height < r.y ||
+           this.x > r.x + r.width ||
+           this.y > r.y + r.height
+         );
+};
+
 Rectangle2.prototype.toString = function () {
     return 'x: ' + this.x + ', y: ' + this.y + ', width: ' + this.width + ', height: ' + this.height;
 };
