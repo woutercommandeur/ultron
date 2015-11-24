@@ -24,6 +24,12 @@ function Vector2 (x, y) {
     this.y = y || 0;
 }
 
+Vector2.warmup = function(amount) {
+    while(amount--) {
+        new Vector2().free();
+    }
+}
+
 Vector2.getStats = function() {
     return [cache.length, created];
 };
