@@ -12,7 +12,8 @@ var avoidance = require('../../ai/steering').avoidance;
 exports = module.exports = Dungeon;
 
 var GENERATE_ROOMS = 1,
-    EVADE_ROOMS = 2;
+    EVADE_ROOMS = 2,
+    SELECT_ROOMS = 3;
 
 
 function Dungeon(chance, iterations, radius, minSide, maxSide)
@@ -69,7 +70,10 @@ Dungeon.prototype.evadeRooms = function()
   var i,r,v,j,rr,f;
   var p1 = Vector2();
   var p2 = Vector2();
+  var avoided = false;
+  var oneAvoided = false;
   for (i=0;i<l;i++) {
+    avoided = false;
     r = this.rooms[i];
     v = this.vectors[i];
     for (j=0;j<l;j++) {
@@ -82,14 +86,20 @@ Dungeon.prototype.evadeRooms = function()
           f = avoidance(p2,p1,v,10,10,5);
           v.copy(f);
           f.free();
+          avoided = true;
         }
       }
     }
-    r.x += v.x;
-    r.y += v.y;
+    if (avoided) {
+      r.x += v.x;
+      r.y += v.y;
+      oneAvoided = true;
+    }
   }
 
   p1.free();
   p2.free();
-
+  if (!oneAvoided) {
+    this.state = SELECT_ROOMS;
+  }
 }
