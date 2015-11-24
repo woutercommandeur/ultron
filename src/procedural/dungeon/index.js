@@ -38,6 +38,7 @@ Dungeon.prototype.step = function()
       break;
     case EVADE_ROOMS:
       this.evadeRooms();
+      break;
     default:
       break;
   }
