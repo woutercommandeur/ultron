@@ -33,8 +33,8 @@ function wander(currentVelocity, wanderDistance, wanderRadius, wanderAngle)
   var force = currentVelocity.clone().normalize().multiplyScalar(wanderDistance);
   var displacement = Vector2(0,-1).multiplyScaler(wanderRadius).setAngle(wanderAngle);
   force = force.add(displacement);
-  displacement.free();
-  return circleCenter; // force applied
+  displacement.free();  
+  return force; // force applied
 }
 
 function evade(target, position, maxVelocity, currentVelocity, targetVelocity)
@@ -42,7 +42,7 @@ function evade(target, position, maxVelocity, currentVelocity, targetVelocity)
   var distance = target.clone().subtract(position);
   var updatesNeeded = distance.length() / maxVelocity;
   distance.free();
-  var tv = tagetVelocity.clone().multiplyScalar(updatesNeeded);
+  var tv = targetVelocity.clone().multiplyScalar(updatesNeeded);
   var targetFuturePosition = targetVelocity.clone().add(tv);
   tv.free();
   var force = flee(targetFuturePosition, position, currentVelocity, maxVelocity);
