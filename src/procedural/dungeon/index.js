@@ -83,7 +83,7 @@ Dungeon.prototype.evadeRooms = function()
           // avoidance force
           p1.set(r.x,r.y);
           p2.set(rr.x,rr.y);
-          f = avoidance(p2,p1,v,10,10,5);
+          f = avoidance(p2,p1,v,10,10,5); // arbitrary numbers, but it seems to work
           v.copy(f);
           f.free();
           avoided = true;
@@ -100,6 +100,9 @@ Dungeon.prototype.evadeRooms = function()
   p1.free();
   p2.free();
   if (!oneAvoided) {
+    while( v = this.vectors.pop()) {
+      v.free();
+    }
     this.state = SELECT_ROOMS;
   }
 }
