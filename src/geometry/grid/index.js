@@ -1,4 +1,4 @@
 module.exports = {
-  Grid: require('./grid'),
-  Cell: require('./cell')
+    Grid: require('./grid'),
+    Cell: require('./cell')
 };

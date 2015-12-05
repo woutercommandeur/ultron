@@ -8,7 +8,7 @@ var epsilon = 0.0000001;
 var cache = [];
 var created = 0;
 
-function Triangle2 (v0, v1, v2) {
+function Triangle2(v0, v1, v2) {
     if (!(this instanceof Triangle2)) {
         var v = cache.pop();
         if (!v) {
@@ -24,26 +24,24 @@ function Triangle2 (v0, v1, v2) {
     this.v1 = v1;
     this.v2 = v2;
     /*
-    this.center = Vector2();
-    this.radius = 0;
-    this.radius_squared = 0;
+     this.center = Vector2();
+     this.radius = 0;
+     this.radius_squared = 0;
 
-    this.calcCircumcircle();
-    */
+     this.calcCircumcircle();
+     */
 }
 
-Triangle2.getStats = function() {
+Triangle2.getStats = function () {
     return [cache.length, created];
 };
 
-Triangle2.prototype.free = function ()
-{
+Triangle2.prototype.free = function () {
     cache.push(this);
 };
 
 
-Triangle2.prototype.set = function (v0, v1, v2)
-{
+Triangle2.prototype.set = function (v0, v1, v2) {
     this.v0.free();
     this.v1.free();
     this.v2.free();
@@ -54,15 +52,14 @@ Triangle2.prototype.set = function (v0, v1, v2)
     return this;
 };
 
-Triangle2.prototype.translate = function (vec)
-{
+Triangle2.prototype.translate = function (vec) {
     this.v0.add(vec);
     this.v1.add(vec);
     this.v2.add(vec);
     return this;
 };
 
-Triangle2.prototype.calcCircumcircle = function() {
+Triangle2.prototype.calcCircumcircle = function () {
     // From: http://www.exaflop.org/docs/cgafaq/cga1.html
 
     var A = this.v1.x - this.v0.x;
@@ -103,7 +100,7 @@ Triangle2.prototype.calcCircumcircle = function() {
     this.radius = Math.sqrt(this.radius_squared);
 };
 
-Triangle2.prototype.inCircumcircle = function(v) {
+Triangle2.prototype.inCircumcircle = function (v) {
     var dx = this.center.x - v.x;
     var dy = this.center.y - v.y;
     var dist_squared = dx * dx + dy * dy;

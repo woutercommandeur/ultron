@@ -11,7 +11,7 @@ exports = module.exports = Polygon2;
 var cache = [];
 var created = 0;
 
-function Polygon2 (points) {
+function Polygon2(points) {
     if (!(this instanceof Polygon2)) {
         var p = cache.pop();
         if (!p) {
@@ -26,27 +26,24 @@ function Polygon2 (points) {
     this.points = points || [];
 }
 
-Polygon2.fromArray = function (points)
-{
+Polygon2.fromArray = function (points) {
     var p = Polygon2();
-    for (var i = 0;i<points.length; i++) {
+    for (var i = 0; i < points.length; i++) {
         p.add(Vector2.fromArray(points[i]));
     }
     return p;
 };
 
-Polygon2.getStats = function() {
+Polygon2.getStats = function () {
     return [cache.length, created];
 };
 
-Polygon2.prototype.free = function ()
-{
+Polygon2.prototype.free = function () {
     this.freePoints();
     cache.push(this);
 };
 
-Polygon2.prototype.freePoints = function ()
-{
+Polygon2.prototype.freePoints = function () {
     var p = this.points.pop();
     while (p) {
         p.free();
@@ -55,36 +52,31 @@ Polygon2.prototype.freePoints = function ()
     return this;
 };
 
-Polygon2.prototype.set = function (points)
-{
+Polygon2.prototype.set = function (points) {
     this.points = points || [];
     return this;
 };
 
-Polygon2.prototype.add = function (point)
-{
+Polygon2.prototype.add = function (point) {
     this.points.push(point);
     return this;
 };
 
-Polygon2.prototype.translate = function (vec)
-{
-    for ( var i = 0; i<this.points.length;i++) {
+Polygon2.prototype.translate = function (vec) {
+    for (var i = 0; i < this.points.length; i++) {
         this.points[i].add(vec);
     }
     return this;
 };
 
-Polygon2.prototype.rotate = function (angle, origin)
-{
-    for (var i = 0; i<this.points.length;i++) {
+Polygon2.prototype.rotate = function (angle, origin) {
+    for (var i = 0; i < this.points.length; i++) {
         this.points[i].rotate(angle, origin);
     }
     return this;
 };
 
-Polygon2.prototype.containsPoint = function (point)
-{
+Polygon2.prototype.containsPoint = function (point) {
     var inside = false;
     for (var i = 0, j = this.points.length - 1; i < this.points.length; j = i++) {
         var xi = this.points[i].x, yi = this.points[i].y;
@@ -99,8 +91,7 @@ Polygon2.prototype.containsPoint = function (point)
     return inside;
 };
 
-Polygon2.prototype.intersectsLine = function (line, ignorePoints)
-{
+Polygon2.prototype.intersectsLine = function (line, ignorePoints) {
     var tempLine = LineSegment2();
 
     var intersect = false;
@@ -135,8 +126,7 @@ Polygon2.prototype.intersectsLine = function (line, ignorePoints)
 };
 
 
-Polygon2.prototype.intersectsTriangle = function (triangle, ignorePoints)
-{
+Polygon2.prototype.intersectsTriangle = function (triangle, ignorePoints) {
     var tempLine = LineSegment2();
 
     tempLine.start.copy(triangle.v0);
@@ -165,21 +155,20 @@ Polygon2.prototype.intersectsTriangle = function (triangle, ignorePoints)
     return false;
 };
 
-Polygon2.prototype.AABB = function()
-{
+Polygon2.prototype.AABB = function () {
     var min = this.points[0].clone();
     var max = this.points[0].clone();
 
-    for (var i = 1; i< this.points.length; i++) {
+    for (var i = 1; i < this.points.length; i++) {
         var p = this.points[i];
-        if ( p.x < min.x ) {
+        if (p.x < min.x) {
             min.x = p.x;
-        } else if ( p.x > max.x ) {
+        } else if (p.x > max.x) {
             max.x = p.x;
         }
-        if ( p.y < min.y ) {
+        if (p.y < min.y) {
             min.y = p.y;
-        } else if ( p.y > max.y ) {
+        } else if (p.y > max.y) {
             max.y = p.y;
         }
     }
@@ -187,11 +176,11 @@ Polygon2.prototype.AABB = function()
 };
 
 // negative = CCW
-Polygon2.prototype.winding = function() {
+Polygon2.prototype.winding = function () {
     return this.area() > 0;
 };
 
-Polygon2.prototype.rewind = function(cw) {
+Polygon2.prototype.rewind = function (cw) {
     cw = !!cw;
     var winding = this.winding();
     if (winding !== cw) {
@@ -200,7 +189,7 @@ Polygon2.prototype.rewind = function(cw) {
     return this;
 };
 
-Polygon2.prototype.area = function() {
+Polygon2.prototype.area = function () {
     var area = 0;
     var first = this.points[0];
     var p1 = Vector2();
@@ -212,11 +201,10 @@ Polygon2.prototype.area = function() {
     }
     p1.free();
     p2.free();
-    return area/2;
+    return area / 2;
 };
 
-Polygon2.prototype.clean = function(distance)
-{
+Polygon2.prototype.clean = function (distance) {
     var p1 = Vector2();
     var newpoints = [];
     for (var i = 0, j = this.points.length - 1; i < this.points.length; j = i++) {
@@ -230,10 +218,9 @@ Polygon2.prototype.clean = function(distance)
     this.points = newpoints;
 };
 
-Polygon2.prototype.toArray = function ()
-{
+Polygon2.prototype.toArray = function () {
     var ret = [];
-    for (var i = 0; i< this.points.length; i++) {
+    for (var i = 0; i < this.points.length; i++) {
         ret.push(this.points[i].toArray());
     }
     return ret;

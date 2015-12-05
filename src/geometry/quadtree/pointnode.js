@@ -51,7 +51,7 @@ PointNode.prototype.insert = function (item) {
 
     var len = this.children.length;
     if (this._depth < this._maxDepth &&
-            len > this._maxChildren) {
+        len > this._maxChildren) {
 
         this.subdivide();
 
@@ -116,39 +116,39 @@ PointNode.prototype.subdivide = function () {
 
     //top left
     this.nodes[PointNode.TOP_LEFT] = new this._classConstructor({
-        x: bx,
-        y: by,
-        width: b_w_h,
-        height: b_h_h
-    },
+            x: bx,
+            y: by,
+            width: b_w_h,
+            height: b_h_h
+        },
         depth, this._maxDepth, this._maxChildren);
 
     //top right
     this.nodes[PointNode.TOP_RIGHT] = new this._classConstructor({
-        x: bx_b_w_h,
-        y: by,
-        width: b_w_h,
-        height: b_h_h
-    },
+            x: bx_b_w_h,
+            y: by,
+            width: b_w_h,
+            height: b_h_h
+        },
         depth, this._maxDepth, this._maxChildren);
 
     //bottom left
     this.nodes[PointNode.BOTTOM_LEFT] = new this._classConstructor({
-        x: bx,
-        y: by_b_h_h,
-        width: b_w_h,
-        height: b_h_h
-    },
+            x: bx,
+            y: by_b_h_h,
+            width: b_w_h,
+            height: b_h_h
+        },
         depth, this._maxDepth, this._maxChildren);
 
 
     //bottom right
     this.nodes[PointNode.BOTTOM_RIGHT] = new this._classConstructor({
-        x: bx_b_w_h,
-        y: by_b_h_h,
-        width: b_w_h,
-        height: b_h_h
-    },
+            x: bx_b_w_h,
+            y: by_b_h_h,
+            width: b_w_h,
+            height: b_h_h
+        },
         depth, this._maxDepth, this._maxChildren);
 };
 

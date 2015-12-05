@@ -21,8 +21,8 @@
  * THE SOFTWARE.
  */
 
- /*
-  * Optimizations and data reuse by Wouter Commandeur
+/*
+ * Optimizations and data reuse by Wouter Commandeur
  */
 
 'use strict';
@@ -95,21 +95,21 @@ DoublyLinkedList.prototype = {
     },
 
 
-    set: function(index, data) {
+    set: function (index, data) {
         // update data at index
         //check for out-of-bounds values
-        if (index > -1 && index < this._length){
+        if (index > -1 && index < this._length) {
             var current, i;
             if (index > this._length / 2) {
                 current = this._tail;
                 i = this._length - 1;
-                while(i-- > index) {
+                while (i-- > index) {
                     current = current.prev;
                 }
             } else {
                 current = this._head;
                 i = 0;
-                while(i++ < index){
+                while (i++ < index) {
                     current = current.next;
                 }
             }
@@ -126,21 +126,21 @@ DoublyLinkedList.prototype = {
      *      or null if the item doesn't exist.
      * @method item
      */
-    item: function(index){
+    item: function (index) {
 
         //check for out-of-bounds values
-        if (index > -1 && index < this._length){
+        if (index > -1 && index < this._length) {
             var current, i;
             if (index > this._length / 2) {
                 current = this._tail;
                 i = this._length - 1;
-                while(i-- > index) {
+                while (i-- > index) {
                     current = current.prev;
                 }
             } else {
                 current = this._head;
                 i = 0;
-                while(i++ < index){
+                while (i++ < index) {
                     current = current.next;
                 }
             }
@@ -150,8 +150,8 @@ DoublyLinkedList.prototype = {
         }
     },
 
-    pop: function() {
-        return this.remove(this._length -1);
+    pop: function () {
+        return this.remove(this._length - 1);
     },
 
     /**
@@ -161,15 +161,15 @@ DoublyLinkedList.prototype = {
      *      the item doesn't exist.
      * @method remove
      */
-    remove: function(index){
+    remove: function (index) {
         //check for out-of-bounds values
-        if (index > -1 && index < this._length){
+        if (index > -1 && index < this._length) {
 
             var current = this._head,
                 i = 0;
 
             //special case: removing first item
-            if (index === 0){
+            if (index === 0) {
                 this._head = current.next;
 
                 /*
@@ -179,21 +179,21 @@ DoublyLinkedList.prototype = {
                  * the list. Otherwise, set the previous pointer on the new
                  * this._head to be null.
                  */
-                if (!this._head){
+                if (!this._head) {
                     this._tail = null;
                 } else {
                     this._head.prev = null;
                 }
 
-            //special case: removing last item
-            } else if (index === this._length -1){
+                //special case: removing last item
+            } else if (index === this._length - 1) {
                 current = this._tail;
                 this._tail = current.prev;
                 this._tail.next = null;
             } else {
 
                 //find the right location
-                while(i++ < index){
+                while (i++ < index) {
                     current = current.next;
                 }
 
@@ -215,18 +215,18 @@ DoublyLinkedList.prototype = {
         }
     },
 
-    clear: function() {
+    clear: function () {
         while (this._length > 0) {
             this.remove(0);
         }
     },
 
-   /**
+    /**
      * Returns the number of items in the list.
      * @return {int} The number of items in the list.
      * @method size
      */
-    size: function(){
+    size: function () {
         return this._length;
     },
 
@@ -235,11 +235,11 @@ DoublyLinkedList.prototype = {
      * @return {Array} An array containing all of the data in the list.
      * @method toArray
      */
-    toArray: function(){
+    toArray: function () {
         var result = [],
             current = this._head;
 
-        while(current){
+        while (current) {
             result.push(current.data);
             current = current.next;
         }
@@ -252,15 +252,15 @@ DoublyLinkedList.prototype = {
      * @return {String} A string representation of the list.
      * @method toString
      */
-    toString: function(){
+    toString: function () {
         return this.toArray().toString();
     },
 
-    _free: function(node) {
+    _free: function (node) {
         this._nodeCache.push(node);
     },
 
-    _allocate: function(data) {
+    _allocate: function (data) {
         var node = this._nodeCache.pop();
         if (!node) {
             node = {};

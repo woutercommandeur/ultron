@@ -9,7 +9,7 @@ var degrees = 180 / Math.PI;
 var cache = [];
 var created = 0;
 
-function Vector2 (x, y) {
+function Vector2(x, y) {
     if (!(this instanceof Vector2)) {
         var v = cache.pop();
         if (!v) {
@@ -24,13 +24,13 @@ function Vector2 (x, y) {
     this.y = y || 0;
 }
 
-Vector2.warmup = function(amount) {
-    while(amount--) {
+Vector2.warmup = function (amount) {
+    while (amount--) {
         new Vector2().free();
     }
 }
 
-Vector2.getStats = function() {
+Vector2.getStats = function () {
     return [cache.length, created];
 };
 
@@ -133,17 +133,16 @@ Vector2.prototype.cross = function (vec) {
 };
 
 Vector2.prototype.projectOnto = function (vec) {
-    var coeff = ( (this.x * vec.x)+(this.y * vec.y) ) / ((vec.x*vec.x)+(vec.y*vec.y));
+    var coeff = ( (this.x * vec.x) + (this.y * vec.y) ) / ((vec.x * vec.x) + (vec.y * vec.y));
     this.x = coeff * vec.x;
     this.y = coeff * vec.y;
     return this;
 };
 
-Vector2.prototype.setAngle = function(rad)
-{
-  var len = this.length();
-  this.x = Math.cos(rad) * len;
-  this.y = Math.sin(rad) * len;
+Vector2.prototype.setAngle = function (rad) {
+    var len = this.length();
+    this.x = Math.cos(rad) * len;
+    this.y = Math.sin(rad) * len;
 }
 
 Vector2.prototype.horizontalAngle = function () {
@@ -204,7 +203,7 @@ Vector2.prototype.distance = function (vec) {
 
 Vector2.prototype.distanceSq = function (vec) {
     var dx = this.x - vec.x,
-    dy = this.y - vec.y;
+        dy = this.y - vec.y;
     return dx * dx + dy * dy;
 };
 
@@ -218,14 +217,14 @@ Vector2.prototype.lengthSq = function () {
 
 Vector2.prototype.magnitude = Vector2.prototype.length;
 
-Vector2.prototype.isZero = function() {
+Vector2.prototype.isZero = function () {
     return this.x === 0 && this.y === 0;
 };
-Vector2.prototype.isEqualTo = function(vec) {
+Vector2.prototype.isEqualTo = function (vec) {
     return this.x === vec.x && this.y === vec.y;
 };
 
-Vector2.prototype.isEqualEpsilon = function(vec) {
+Vector2.prototype.isEqualEpsilon = function (vec) {
     return Math.abs(this.x - vec.x) < epsilon && Math.abs(this.y - vec.y) < epsilon;
 };
 
@@ -234,18 +233,18 @@ Vector2.prototype.toString = function () {
 };
 
 Vector2.prototype.toArray = function () {
-    return [ this.x, this.y ];
+    return [this.x, this.y];
 };
 
 Vector2.prototype.toObject = function () {
-    return { x: this.x, y: this.y };
+    return {x: this.x, y: this.y};
 };
 
-function radian2degrees (rad) {
+function radian2degrees(rad) {
     return rad * degrees;
 }
 
-function degrees2radian (deg) {
+function degrees2radian(deg) {
     return deg / degrees;
 }
 /* jshint +W064 */

@@ -12,7 +12,7 @@ StateStack.prototype.begin = function (timestamp, frameDelta) {
     var depth = 0;
     var state = this.states.top(depth);
     while (state) {
-        if (!state.begin(timestamp, frameDelta) ) {
+        if (!state.begin(timestamp, frameDelta)) {
             state = this.states.top(++depth);
         } else {
             state = false;

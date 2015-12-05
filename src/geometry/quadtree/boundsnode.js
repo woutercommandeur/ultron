@@ -23,9 +23,9 @@ BoundsNode.prototype.insert = function (item) {
 
         //todo: make _bounds bounds
         if (item.x >= node._bounds.x &&
-                item.x + item.width <= node._bounds.x + node._bounds.width &&
-                item.y >= node._bounds.y &&
-                item.y + item.height <= node._bounds.y + node._bounds.height) {
+            item.x + item.width <= node._bounds.x + node._bounds.width &&
+            item.y >= node._bounds.y &&
+            item.y + item.height <= node._bounds.y + node._bounds.height) {
 
             this.nodes[index].insert(item);
 
@@ -41,7 +41,7 @@ BoundsNode.prototype.insert = function (item) {
     var len = this.children.length;
 
     if (this._depth < this._maxDepth &&
-            len > this._maxChildren) {
+        len > this._maxChildren) {
 
         this.subdivide();
 
@@ -66,9 +66,9 @@ BoundsNode.prototype.retrieve = function (item) {
         var node = this.nodes[index];
 
         if (item.x >= node._bounds.x &&
-                item.x + item.width <= node._bounds.x + node._bounds.width &&
-                item.y >= node._bounds.y &&
-                item.y + item.height <= node._bounds.y + node._bounds.height) {
+            item.x + item.width <= node._bounds.x + node._bounds.width &&
+            item.y >= node._bounds.y &&
+            item.y + item.height <= node._bounds.y + node._bounds.height) {
 
             out.push.apply(out, this.nodes[index].retrieve(item));
         } else {

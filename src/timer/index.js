@@ -1,3 +1,3 @@
 module.exports = {
-  GameLoop: require('./gameloop')
+    GameLoop: require('./gameloop')
 };

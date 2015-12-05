@@ -1,3 +1,3 @@
 module.exports = {
-  DoublyLinkedList: require('./doublylinkedlist')
+    DoublyLinkedList: require('./doublylinkedlist')
 };

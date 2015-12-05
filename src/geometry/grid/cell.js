@@ -24,13 +24,13 @@ function Cell(x, y, width, height) {
     this.items = [];
 }
 
-Cell.prototype.insert = function(item) {
+Cell.prototype.insert = function (item) {
     if (
         (item.fromX >= this.x && item.fromY >= this.y && item.toX <= this.x + this.width && item.toY <= this.y + this.height) ||
-        intersect(item.fromX, item.fromY, item.toX, item.toY, this.x, this.y, this.x+this.width, this.y) ||
-        intersect(item.fromX, item.fromY, item.toX, item.toY, this.x, this.y, this.x, this.y+this.height) ||
-        intersect(item.fromX, item.fromY, item.toX, item.toY, this.x+this.width, this.y, this.x+this.width, this.y+this.height) ||
-        intersect(item.fromX, item.fromY, item.toX, item.toY, this.x, this.y+this.height, this.x+this.width, this.y+this.height)
+        intersect(item.fromX, item.fromY, item.toX, item.toY, this.x, this.y, this.x + this.width, this.y) ||
+        intersect(item.fromX, item.fromY, item.toX, item.toY, this.x, this.y, this.x, this.y + this.height) ||
+        intersect(item.fromX, item.fromY, item.toX, item.toY, this.x + this.width, this.y, this.x + this.width, this.y + this.height) ||
+        intersect(item.fromX, item.fromY, item.toX, item.toY, this.x, this.y + this.height, this.x + this.width, this.y + this.height)
     ) {
         this.items.push(item);
     }

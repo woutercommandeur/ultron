@@ -1,10 +1,11 @@
 'use strict';
 
-exports = module.exports = State;
+module.exports = State;
 
-var NOOP = function() {};
+var NOOP = function () {
+};
 
-function State ( name ) {
+function State(name) {
     this.name = name;
 }
 

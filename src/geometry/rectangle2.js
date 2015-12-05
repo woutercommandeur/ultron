@@ -6,7 +6,7 @@ exports = module.exports = Rectangle2;
 var cache = [];
 var created = 0;
 
-function Rectangle2 (x, y, width, height) {
+function Rectangle2(x, y, width, height) {
     if (!(this instanceof Rectangle2)) {
         var v = cache.pop();
         if (!v) {
@@ -23,7 +23,7 @@ function Rectangle2 (x, y, width, height) {
     this.height = height || 0;
 }
 
-Rectangle2.getStats = function() {
+Rectangle2.getStats = function () {
     return [cache.length, created];
 };
 
@@ -47,18 +47,18 @@ Rectangle2.prototype.free = function () {
     cache.push(this);
 };
 
-Rectangle2.prototype.translate = function(vec) {
+Rectangle2.prototype.translate = function (vec) {
     this.x += vec.x;
     this.y += vec.y;
     return this;
 };
 
 Rectangle2.prototype.intersects = function (r) {
-  return !(this.x + this.width < r.x ||
-           this.y + this.height < r.y ||
-           this.x > r.x + r.width ||
-           this.y > r.y + r.height
-         );
+    return !(this.x + this.width < r.x ||
+    this.y + this.height < r.y ||
+    this.x > r.x + r.width ||
+    this.y > r.y + r.height
+    );
 };
 
 Rectangle2.prototype.toString = function () {
@@ -66,11 +66,11 @@ Rectangle2.prototype.toString = function () {
 };
 
 Rectangle2.prototype.toArray = function () {
-    return [ this.x, this.y ];
+    return [this.x, this.y];
 };
 
 Rectangle2.prototype.toObject = function () {
-    return { x: this.x, y: this.y, width: this.width, height: this.height };
+    return {x: this.x, y: this.y, width: this.width, height: this.height};
 };
 
 /* jshint +W064 */

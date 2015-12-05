@@ -2,26 +2,27 @@
 /* jshint -W064 */
 
 /*
-    Based upon https://code.google.com/p/visibility-polygon-js/
-    Made by Byron Knoll in 2013/2014.
-*/
+ Based upon https://code.google.com/p/visibility-polygon-js/
+ Made by Byron Knoll in 2013/2014.
+ */
 
 var Polygon2 = require('./polygon2'),
     Vector2 = require('./vector2'),
     LineSegment2 = require('./linesegment2');
 
 var PI = Math.PI;
-var PI2 = PI*2;
-var PImin = -1*PI;
+var PI2 = PI * 2;
+var PImin = -1 * PI;
 var epsilon = 0.0000001;
 
 var segmentIter = ['start', 'end'];
-function pointsorter(a,b) {
+function pointsorter(a, b) {
     return a[2] - b[2];
 }
 
-function VisibilityPolygon(segments)
-{
+exports = module.exports = VisibilityPolygon;
+
+function VisibilityPolygon(segments) {
     this.polygon = Polygon2();
     this.segments = segments;
     this.heap = [];
@@ -30,8 +31,7 @@ function VisibilityPolygon(segments)
     this.position = Vector2();
 }
 
-VisibilityPolygon.prototype.angle = function (p1, p2)
-{
+VisibilityPolygon.prototype.angle = function (p1, p2) {
     var p = p2.clone().subtract(p1);
     var a = p.angle();
     p.free();
@@ -42,20 +42,23 @@ VisibilityPolygon.prototype.angle2 = function (a, b, c) {
     var a1 = this.angle(a, b);
     var a2 = this.angle(b, c);
     var a3 = a1 - a2;
-    if (a3 < 0) { a3 += PI2; }
-    if (a3 > PI2) { a3 -= PI2; }
+    if (a3 < 0) {
+        a3 += PI2;
+    }
+    if (a3 > PI2) {
+        a3 -= PI2;
+    }
     return a3;
 };
 
 
-VisibilityPolygon.prototype.compute = function (position)
-{
+VisibilityPolygon.prototype.compute = function (position) {
     this.position.copy(position);
     this.reset();
     this.sortPoints();
 
     var start = this.position.clone();
-    start.x +=1; // why?
+    start.x += 1; // why?
 
     var i = 0,
         n = this.segments.length;
@@ -71,7 +74,7 @@ VisibilityPolygon.prototype.compute = function (position)
         i += 1;
     }
     i = 0;
-    n = this.segments.length*2;
+    n = this.segments.length * 2;
     while (i < n) {
         var extend = false;
         var shorten = false;
@@ -92,14 +95,16 @@ VisibilityPolygon.prototype.compute = function (position)
                 }
             }
             ++i;
-            if (i === n) { break; }
+            if (i === n) {
+                break;
+            }
         } while (this.points[i][2] < this.points[orig][2] + epsilon);
 
         var l = LineSegment2(position.clone(), vertex.clone());
         if (extend) {
             this.polygon.add(vertex.clone());
             var cur = this.segments[this.heap[0]].intersect(l, true);
-            if (cur ) {
+            if (cur) {
                 if (!cur.isEqualEpsilon(vertex)) {
                     this.polygon.add(cur);
                 } else {
@@ -166,18 +171,17 @@ VisibilityPolygon.prototype.remove = function (index, destination) {
             var right = left + 1;
             if (left < this.heap.length && this.lessThan(this.heap[left], this.heap[cur], destination) &&
                 (right === this.heap.length || this.lessThan(this.heap[left], this.heap[right], destination))) {
-                    this.swap(cur, left);
-                    cur = left;
-                } else if (right < this.heap.length && this.lessThan(this.heap[right], this.heap[cur], destination)) {
-                    this.swap(cur, right);
-                    cur = right;
-                } else {
-                    break;
-                }
+                this.swap(cur, left);
+                cur = left;
+            } else if (right < this.heap.length && this.lessThan(this.heap[right], this.heap[cur], destination)) {
+                this.swap(cur, right);
+                cur = right;
+            } else {
+                break;
             }
         }
-    };
-
+    }
+};
 
 
 VisibilityPolygon.prototype.lessThan = function (index1, index2, destination) {
@@ -230,12 +234,11 @@ VisibilityPolygon.prototype.swap = function (c, l) {
 };
 
 
-VisibilityPolygon.prototype.sortPoints = function ()
-{
+VisibilityPolygon.prototype.sortPoints = function () {
     var i = 0,
-    n = this.segments.length,
-    p = null,
-    pp = Vector2();
+        n = this.segments.length,
+        p = null,
+        pp = Vector2();
     while (i < n) {
         for (var j = 0; j < 2; ++j) {
             if (j === 0) {
@@ -259,11 +262,10 @@ VisibilityPolygon.prototype.sortPoints = function ()
     this.points = this.points.sort(pointsorter);
 };
 
-VisibilityPolygon.prototype.reset = function ()
-{
+VisibilityPolygon.prototype.reset = function () {
     this.polygon.freePoints();
     var i = 0,
-    n = this.map.length;
+        n = this.map.length;
     while (i < n) {
         this.map[i] = -1;
         i += 1;
