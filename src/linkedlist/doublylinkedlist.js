@@ -272,4 +272,4 @@ DoublyLinkedList.prototype = {
     }
 };
 
-exports = module.exports = DoublyLinkedList;
+module.exports = DoublyLinkedList;

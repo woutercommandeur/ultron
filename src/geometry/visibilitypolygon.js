@@ -20,7 +20,7 @@ function pointsorter(a, b) {
     return a[2] - b[2];
 }
 
-exports = module.exports = VisibilityPolygon;
+module.exports = VisibilityPolygon;
 
 function VisibilityPolygon(segments) {
     this.polygon = Polygon2();

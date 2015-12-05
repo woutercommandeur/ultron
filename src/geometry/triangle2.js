@@ -2,7 +2,7 @@
 
 /* jshint -W064 */
 
-exports = module.exports = Triangle2;
+module.exports = Triangle2;
 
 var epsilon = 0.0000001;
 var cache = [];

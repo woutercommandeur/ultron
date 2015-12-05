@@ -1,3 +1,3 @@
-exports = module.exports = {
+module.exports = {
     Unified: require('./unified')
 };

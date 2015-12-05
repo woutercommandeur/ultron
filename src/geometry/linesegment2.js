@@ -4,7 +4,7 @@
 
 var Vector2 = require('./vector2');
 
-exports = module.exports = LineSegment2;
+module.exports = LineSegment2;
 
 var cache = [];
 var created = 0;

@@ -1,7 +1,7 @@
 'use strict';
 /* jshint -W064 */
 
-exports = module.exports = Vector2;
+module.exports = Vector2;
 
 var epsilon = 0.0000001;
 var degrees = 180 / Math.PI;
@@ -28,7 +28,7 @@ Vector2.warmup = function (amount) {
     while (amount--) {
         new Vector2().free();
     }
-}
+};
 
 Vector2.getStats = function () {
     return [cache.length, created];
@@ -143,7 +143,7 @@ Vector2.prototype.setAngle = function (rad) {
     var len = this.length();
     this.x = Math.cos(rad) * len;
     this.y = Math.sin(rad) * len;
-}
+};
 
 Vector2.prototype.horizontalAngle = function () {
     return Math.atan2(this.y, this.x);

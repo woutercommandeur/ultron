@@ -2,7 +2,7 @@
 
 var StateList = require('./statelist');
 
-exports = module.exports = StateStack;
+module.exports = StateStack;
 
 function StateStack() {
     this.states = new StateList();

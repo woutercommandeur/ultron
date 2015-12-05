@@ -10,7 +10,7 @@ var EventEmitter = require('eventemitter3');
 // mousewheel polyfill borrowed directly from game-shell
 var addMouseWheel = require('./mousewheel-polyfill');
 
-exports = module.exports = Inputs;
+module.exports = Inputs;
 
 // map button index to name
 var gamepadButtonNames = [

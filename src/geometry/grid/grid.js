@@ -66,4 +66,4 @@ Grid.prototype.retrieve = function (item) {
     return this.out;
 };
 
-exports = module.exports = Grid;
+module.exports = Grid;

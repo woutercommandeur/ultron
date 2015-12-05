@@ -9,7 +9,7 @@ var gpc = require('../../geometry/gpc');
 var Delaunay = require('delaunay-fast');
 var Graph = require('../graph');
 
-exports = module.exports = Building;
+module.exports = Building;
 
 var createPoly = function (points) {
     var res = new gpc.geometry.PolyDefault();

@@ -51,7 +51,7 @@ function _addWheelListener(elem, eventName, callback, useCapture) {
     }, useCapture || false);
 }
 
-exports = module.exports = function (elem, callback, useCapture) {
+module.exports = function (elem, callback, useCapture) {
     _addWheelListener(elem, support, callback, useCapture);
 
     // handle MozMousePixelScroll in older Firefox

@@ -4,7 +4,7 @@ var gpcas = gpcas || {};
 gpcas.util = {};
 gpcas.geometry = {};
 
-exports = module.exports = gpcas;
+module.exports = gpcas;
 
 //////////
 var Clip, BundleState, LmtNode, TopPolygonNode, AetTree, HState, VertexType, VertexNode, ItNodeTable, StNode;

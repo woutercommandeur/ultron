@@ -143,4 +143,4 @@ BoundsNode.prototype.clear = function () {
     //Object.getPrototypeOf(BoundsNode.prototype).clear.call(this);
 };
 
-exports = module.exports = BoundsNode;
+module.exports = BoundsNode;

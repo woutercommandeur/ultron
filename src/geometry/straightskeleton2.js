@@ -4,7 +4,7 @@
 var Vector2 = require('./vector2'),
     LineSegment2 = require('./linesegment2');
 
-exports = module.exports = StraightSkeleton2;
+module.exports = StraightSkeleton2;
 
 function StraightSkeleton2(polygon) {
     this.polygon = polygon;

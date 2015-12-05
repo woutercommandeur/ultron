@@ -8,8 +8,8 @@ var Delaunay = require('delaunay-fast');
 var Graph = require('../graph');
 var avoidance = require('../../ai/steering').avoidance;
 
-
-exports = module.exports = Dungeon;
+/* jshint -W064 */
+module.exports = Dungeon;
 
 var GENERATE_ROOMS = 1,
     EVADE_ROOMS = 2,
@@ -56,7 +56,7 @@ Dungeon.prototype.addRoom = function () {
     this.rooms.push(room);
     this.vectors.push(Vector2());
 
-    if (this.rooms.length == this.iterations) {
+    if (this.rooms.length === this.iterations) {
         this.state = EVADE_ROOMS;
     }
 };
@@ -73,7 +73,7 @@ Dungeon.prototype.evadeRooms = function () {
         r = this.rooms[i];
         v = this.vectors[i];
         for (j = 0; j < l; j++) {
-            if (j != i) {
+            if (j !== i) {
                 rr = this.rooms[j];
                 if (r.intersects(rr)) {
                     // avoidance force
@@ -96,9 +96,12 @@ Dungeon.prototype.evadeRooms = function () {
     p1.free();
     p2.free();
     if (!oneAvoided) {
-        while (v = this.vectors.pop()) {
+        v = this.vectors.pop();
+        while (v) {
             v.free();
+            v = this.vectors.pop();
         }
         this.state = SELECT_ROOMS;
     }
-}
+};
+/* jshint +W064 */

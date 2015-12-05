@@ -1,7 +1,7 @@
 'use strict';
 /* jshint -W064 */
 
-exports = module.exports = Rectangle2;
+module.exports = Rectangle2;
 
 var cache = [];
 var created = 0;

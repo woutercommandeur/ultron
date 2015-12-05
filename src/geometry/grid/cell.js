@@ -36,4 +36,4 @@ Cell.prototype.insert = function (item) {
     }
 };
 
-exports = module.exports = Cell;
+module.exports = Cell;

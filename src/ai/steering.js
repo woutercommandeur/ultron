@@ -27,7 +27,9 @@ function wander(currentVelocity, wanderDistance, wanderRadius, wanderAngle) {
     // wanderAngle should be something like:œ
     // wanderAngle += Math.random() * angleChange - angleChange * .5;
     var force = currentVelocity.clone().normalize().multiplyScalar(wanderDistance);
+    /* jshint -W064 */
     var displacement = Vector2(0, -1).multiplyScaler(wanderRadius).setAngle(wanderAngle);
+    /* jshint +W064 */
     force = force.add(displacement);
     displacement.free();
     return force; // force applied
@@ -66,6 +68,7 @@ function avoidance(target, position, velocity, maxAvoidAhead, maxVelocity, avoid
 
 exports = module.exports = {
     straight: straight,
+    evade: evade,
     seek: seek,
     flee: flee,
     wander: wander,

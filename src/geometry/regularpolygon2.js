@@ -5,7 +5,7 @@
 var Vector2 = require('./vector2'),
     Polygon2 = require('./polygon2');
 
-exports = module.exports = RegularPolygon2;
+module.exports = RegularPolygon2;
 
 function RegularPolygon2(radius, sides, center) {
     center = center || Vector2();

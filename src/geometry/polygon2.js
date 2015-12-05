@@ -6,7 +6,7 @@ var Vector2 = require('./vector2');
 var LineSegment2 = require('./linesegment2');
 var epsilon = 0.0000001;
 
-exports = module.exports = Polygon2;
+module.exports = Polygon2;
 
 var cache = [];
 var created = 0;

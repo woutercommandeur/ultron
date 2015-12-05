@@ -74,4 +74,4 @@ QuadTree.prototype.retrieve = function (item) {
     // return out;
 };
 
-exports = module.exports = QuadTree;
+module.exports = QuadTree;

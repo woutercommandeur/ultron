@@ -7,7 +7,7 @@ var cancel = requestFrame('cancel');
 var NOOP = function () {
 };
 
-exports = module.exports = GameLoop;
+module.exports = GameLoop;
 
 function GameLoop() {
     this.simulationTimestep = 1000 / 60;

@@ -166,4 +166,4 @@ PointNode.prototype.clear = function () {
 };
 
 
-exports = module.exports = PointNode;
+module.exports = PointNode;

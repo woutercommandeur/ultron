@@ -1,6 +1,6 @@
 'use strict';
 
-exports = module.exports = StateList;
+module.exports = StateList;
 
 function StateList() {
     this.states = [];
