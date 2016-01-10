@@ -113,12 +113,10 @@ Inputs.prototype.initEvents = function () {
 
     // gamepads
     if (hasGamepadEvents) {
-      console.log('has gamepad events');
         window.addEventListener('gamepadconnected', onGamepadConnected.bind(undefined, this), false);
         window.addEventListener('gamepaddisconnected', onGamepadDisconnected.bind(undefined, this), false);
         scanGamepads(this);
     } else {
-      console.log('has NO gamepad events');
         window.setInterval(scanGamepads.bind(undefined, this), 500);
     }
 };
@@ -276,7 +274,6 @@ function handleBindingEvent(binding, wasDown, inputs, ev) {
  */
 
 function handleGamePadButtonEvent(val, vcode, inputs) {
-    console.log(vcode);
     var arr = inputs._keybindmap[vcode];
     if (!arr) {
         return;
@@ -360,7 +357,6 @@ function removeGamepad(inputs, gamepad) {
 
 
 function scanGamepads(inputs) {
-  console.log(inputs);
     var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
     var found = false;
     for (var i = 0; i < gamepads.length; i++) {
