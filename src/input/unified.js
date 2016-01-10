@@ -371,7 +371,9 @@ function scanGamepads(inputs) {
       console.log('scanning gamepads');
         if (gamepads[i]) {
             found = true;
-            if (!(gamepads[i].index in inputs._gamepads)) {
+
+
+            if (!inputs._gamepads[gamepads[i].index]) {
                 addGamepad(inputs, gamepads[i]);
             } else {
                 inputs._gamepads[gamepads[i].index] = gamepads[i];
