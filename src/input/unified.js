@@ -116,6 +116,7 @@ Inputs.prototype.initEvents = function () {
       console.log('has gamepad events');
         window.addEventListener('gamepadconnected', onGamepadConnected.bind(undefined, this), false);
         window.addEventListener('gamepaddisconnected', onGamepadDisconnected.bind(undefined, this), false);
+        scanGamepads(this);
     } else {
       console.log('has NO gamepad events');
         window.setInterval(scanGamepads.bind(undefined, this), 500);
