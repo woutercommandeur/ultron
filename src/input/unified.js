@@ -328,7 +328,7 @@ function updateGamepads(inputs) {
             inputs.state[vcode] = gamepad.axes[i];
         }
     }
-    inputs._gamepadRaf = request(updateGamepads);
+    inputs._gamepadRaf = request(updateGamepads.bind(inputs));
 }
 
 function onGamepadConnected(inputs, ev) {
@@ -345,7 +345,7 @@ function addGamepad(inputs, gamepad) {
     inputs._gamepads[gamepad.index] = gamepad;
     inputs.gamepadconnected.emit(gamepad);
     if (!inputs._gamepadRaf) {
-        inputs._gamepadRaf = request(updateGamepads);
+        inputs._gamepadRaf = request(updateGamepads.bind(inputs));
     }
 }
 
