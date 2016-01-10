@@ -365,6 +365,7 @@ function removeGamepad(inputs, gamepad) {
 
 
 function scanGamepads(inputs) {
+  console.log(inputs);
     var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
     var found = false;
     for (var i = 0; i < gamepads.length; i++) {
