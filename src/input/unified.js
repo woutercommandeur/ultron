@@ -292,6 +292,7 @@ function handleGamePadButtonEvent(val, vcode, inputs) {
         if (XOR(currstate, val)) {
             var i = 0;
             for (i = 0; i < arr.length; ++i) {
+              console.log(arr[i],pressed);
                 handleBindingEvent(arr[i], pressed, inputs, null); // pass null as fake event
             }
         }
