@@ -301,9 +301,7 @@ function handleGamePadButtonEvent(val, vcode, inputs) {
 }
 
 function updateGamepads(inputs, extra, foo) {
-  console.log('updateGamePads', inputs, extra, foo);
     var found = scanGamepads(inputs);
-    console.log('gamepads',found);
     if (!found) {
         if (inputs._gamepadRaf) {
             cancel(inputs._gamepadRaf);
@@ -318,14 +316,11 @@ function updateGamepads(inputs, extra, foo) {
 
         for (var i = 0; i < gamepad.buttons.length; i++) {
             vcode = '<gamepad-' + j + '-' + gamepadButtonNames[i] + '>';
-            console.log(vcode);
             handleGamePadButtonEvent(gamepad.buttons[i], vcode, inputs);
         }
 
         for (i = 0; i < gamepad.axes.length; i++) {
-
             vcode = '<gamepad-' + j + '-' + gamepadAxesNames[i] + '>';
-            console.log(vcode);
             inputs.state[vcode] = gamepad.axes[i];
         }
     }
@@ -342,7 +337,6 @@ function onGamepadDisconnected(inputs, ev) {
 
 
 function addGamepad(inputs, gamepad) {
-    console.log('adding gamepad', gamepad);
     inputs._gamepads[gamepad.index] = gamepad;
     inputs.gamepadconnected.emit(gamepad);
     if (!inputs._gamepadRaf) {
@@ -370,11 +364,8 @@ function scanGamepads(inputs) {
     var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
     var found = false;
     for (var i = 0; i < gamepads.length; i++) {
-      console.log('scanning gamepads');
         if (gamepads[i]) {
             found = true;
-
-
             if (!inputs._gamepads[gamepads[i].index]) {
                 addGamepad(inputs, gamepads[i]);
             } else {
