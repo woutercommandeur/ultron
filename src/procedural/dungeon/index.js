@@ -24,8 +24,6 @@ function Dungeon(chance, iterations, radius, minSide, maxSide) {
     this.chance = chance;
     this.iterations = iterations;
     this.radius = radius;
-    this.minSide = minSide;
-    this.maxSide = maxSide;
     this.state = GENERATE_ROOMS;
 }
 

@@ -4,8 +4,7 @@ var requestFrame = require('request-frame');
 var request = requestFrame('request');
 var cancel = requestFrame('cancel');
 
-var NOOP = function () {
-};
+var NOOP = function () {};
 
 module.exports = GameLoop;
 

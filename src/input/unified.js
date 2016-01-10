@@ -273,6 +273,7 @@ function handleBindingEvent(binding, wasDown, inputs, ev) {
  */
 
 function handleGamePadButtonEvent(val, vcode, inputs) {
+    console.log(vcode);
     var arr = inputs._keybindmap[vcode];
     if (!arr) {
         return;
@@ -298,6 +299,7 @@ function handleGamePadButtonEvent(val, vcode, inputs) {
 
 function updateGamepads(inputs) {
     var found = scanGamepads(inputs);
+    console.log('gamepads',found);
     if (!found) {
         if (inputs._gamepadRaf) {
             cancel(inputs._gamepadRaf);
@@ -312,11 +314,14 @@ function updateGamepads(inputs) {
 
         for (var i = 0; i < gamepad.buttons.length; i++) {
             vcode = '<gamepad-' + j + '-' + gamepadButtonNames[i] + '>';
+            console.log(vcode);
             handleGamePadButtonEvent(gamepad.buttons[i], vcode, inputs);
         }
 
         for (i = 0; i < gamepad.axes.length; i++) {
+
             vcode = '<gamepad-' + j + '-' + gamepadAxesNames[i] + '>';
+            console.log(vcode);
             inputs.state[vcode] = gamepad.axes[i];
         }
     }
