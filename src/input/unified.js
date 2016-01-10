@@ -278,6 +278,7 @@ function handleGamePadButtonEvent(val, vcode, inputs) {
     if (!arr) {
         return;
     }
+    console.log(vcode);
 
     var pressed = val === 1.0;
     var isPerc = false;
