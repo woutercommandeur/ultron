@@ -300,7 +300,8 @@ function handleGamePadButtonEvent(val, vcode, inputs) {
     }
 }
 
-function updateGamepads(inputs) {
+function updateGamepads(inputs, extra, foo) {
+  console.log('updateGamePads', inputs, extra, foo);
     var found = scanGamepads(inputs);
     console.log('gamepads',found);
     if (!found) {
