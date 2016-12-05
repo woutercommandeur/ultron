@@ -215,7 +215,7 @@ Inputs.prototype._handleBindingEvent = function(binding, wasDown, ev) {
     // emit event if binding's state has changed
     var currstate = this.state[binding];
     if (XOR(currstate, ct)) {
-        var emitter = wasDown ? inputs.down : inputs.up;
+        var emitter = wasDown ? this.down : this.up;
         emitter.emit(binding, binding, ev);
     }
     this.state[binding] = !!ct;
