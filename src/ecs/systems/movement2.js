@@ -12,7 +12,7 @@ function Movement2System() {
 }
 
 Movement2System.prototype = Object.create(IteratingSystem.prototype);
-Movement2System.prototype.constructor = IteratingSystem.constructor;
+Movement2System.prototype.constructor = IteratingSystem;
 
 Movement2System.prototype.process = function(entity, elapsed) {
     var position = entity.get(this.getComponent(Position2));
