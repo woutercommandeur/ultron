@@ -37,7 +37,9 @@ var gamepadAxesNames = [
     'right-stick-x',
     'right-stick-y'
 ];
-var hasGamepadEvents = 'GamepadEvent' in window;
+// var hasGamepadEvents = 'GamepadEvent' in window;
+var hasGamepadEvents = !!navigator.webkitGetGamepads || !!navigator.webkitGamepads || (navigator.userAgent.indexOf('Firefox/') !== -1) || !!navigator.getGamepads;
+
 
 
 /*
@@ -359,7 +361,7 @@ function removeGamepad(inputs, gamepad) {
 
 
 function scanGamepads(inputs) {
-    var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : []);
+    var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : (navigator.webkitGamePads ? navigator.webkitGamepads() : []));
     var found = false;
     for (var i = 0; i < gamepads.length; i++) {
         if (gamepads[i]) {
