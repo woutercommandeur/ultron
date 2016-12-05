@@ -40,6 +40,10 @@ var gamepadAxesNames = [
 // var hasGamepadEvents = 'GamepadEvent' in window;
 var hasGamepadEvents = !!navigator.webkitGetGamepads || !!navigator.webkitGamepads || (navigator.userAgent.indexOf('Firefox/') !== -1) || !!navigator.getGamepads;
 
+function XOR(a, b) {
+    return a ? !b : b;
+}
+
 
 
 /*
@@ -103,24 +107,23 @@ function Inputs(element, opts) {
 
 Inputs.prototype.initEvents = function () {
     // keys
-    window.addEventListener('keydown', onKeyEvent.bind(undefined, this, true), false);
-    window.addEventListener('keyup', onKeyEvent.bind(undefined, this, false), false);
+    window.addEventListener('keydown', this._onKeyEvent.bind(this, true), false);
+    window.addEventListener('keyup', this._onKeyEvent.bind(this, false), false);
     // mouse buttons
-    this.element.addEventListener('mousedown', onMouseEvent.bind(undefined, this, true), false);
-    this.element.addEventListener('mouseup', onMouseEvent.bind(undefined, this, false), false);
-    this.element.oncontextmenu = onContextMenu.bind(undefined, this);
+    this.element.addEventListener('mousedown', this._onMouseEvent.bind(this, true), false);
+    this.element.addEventListener('mouseup', this._onMouseEvent.bind(this, false), false);
+    this.element.oncontextmenu = this._onContextMenu.bind(this);
     // mouse other
-    this.element.addEventListener('mousemove', onMouseMove.bind(undefined, this), false);
-    addMouseWheel(this.element, onMouseWheel.bind(undefined, this), false);
+    this.element.addEventListener('mousemove', this._onMouseMove.bind(this), false);
+    // mousewheel polyfill shizzle
+    addMouseWheel(this.element, this._onMouseWheel.bind(this), false);
 
     // gamepads
     if (hasGamepadEvents) {
-        window.addEventListener('gamepadconnected', onGamepadConnected.bind(undefined, this), false);
-        window.addEventListener('gamepaddisconnected', onGamepadDisconnected.bind(undefined, this), false);
-        scanGamepads(this);
-    } else {
-        window.setInterval(scanGamepads.bind(undefined, this), 500);
+        window.addEventListener('gamepadconnected', this._onGamepadConnected.bind(this), false);
+        window.addEventListener('gamepaddisconnected', this._onGamepadDisconnected.bind(this), false);
     }
+    this._scanGamepads();
 };
 
 
@@ -167,39 +170,83 @@ Inputs.prototype.getBoundKeys = function () {
 
 
 /*
- *   INTERNALS - DOM EVENT HANDLERS
+ *   INTERNALS - DOM EVENT HANDLERS KEYBOARD AND MOUSE
  */
 
-function onKeyEvent(inputs, wasDown, ev) {
-    handleKeyEvent(ev.keyCode, vkey[ev.keyCode], wasDown, inputs, ev);
-}
 
-function onMouseEvent(inputs, wasDown, ev) {
+Inputs.prototype._onKeyEvent = function(wasDown, ev) {
+    this._handleKeyEvent(ev.keyCode, vkey[ev.keyCode], wasDown, ev)
+};
+
+Inputs.prototype._handleKeyEvent = function(keycode, vcode, wasDown, ev) {
+    var arr = this._keybindmap[vcode];
+    // don't prevent defaults if there's no binding
+    if (!arr) {
+        return;
+    }
+    if (this.preventDefaults) {
+        ev.preventDefault();
+    }
+    if (this.stopPropagation) {
+        ev.stopPropagation();
+    }
+
+    // if the key's state has changed, handle an event for all bindings
+    var currstate = this._keyStates[keycode];
+    if (XOR(currstate, wasDown)) {
+        // for each binding: emit an event, and update cached state information
+        for (var i = 0; i < arr.length; ++i) {
+            this._handleBindingEvent(arr[i], wasDown, ev);
+        }
+    }
+    this._keyStates[keycode] = wasDown;
+};
+
+Inputs.prototype._handleBindingEvent = function(binding, wasDown, ev) {
+    // keep count of presses mapped by binding
+    // (to handle two keys with the same binding pressed at once)
+    var ct = this._bindPressCounts[binding] || 0;
+    ct += wasDown ? 1 : -1;
+    if (ct < 0) {
+        ct = 0;
+    } // shouldn't happen
+    this._bindPressCounts[binding] = ct;
+
+    // emit event if binding's state has changed
+    var currstate = this.state[binding];
+    if (XOR(currstate, ct)) {
+        var emitter = wasDown ? inputs.down : inputs.up;
+        emitter.emit(binding, binding, ev);
+    }
+    this.state[binding] = !!ct;
+};
+
+
+
+Inputs.prototype._onMouseEvent = function(wasDown, ev) {
     // simulate a code out of range of vkey
     var keycode = -1 - ev.button;
     var vkeycode = '<mouse ' + (ev.button + 1) + '>';
-    handleKeyEvent(keycode, vkeycode, wasDown, inputs, ev);
+    this._handleKeyEvent(keycode, vkeycode, wasDown, ev);
     return false;
-}
+};
 
-function onContextMenu(inputs) {
+Inputs.prototype._onContextMenu = function() {
     // cancel context menu if there's a binding for right mousebutton
-    var arr = inputs._keybindmap['<mouse 3>'];
+    var arr = this._keybindmap['<mouse 3>'];
     if (arr) {
         return false;
     }
-}
+};
 
-function onMouseMove(inputs, ev) {
+Inputs.prototype._onMouseMove = function(ev) {
     // for now, just populate the state object with mouse movement
-    var dx = ev.movementX || ev.mozMovementX || ev.webkitMovementX || 0,
-        dy = ev.movementY || ev.mozMovementY || ev.webkitMovementY || 0;
-    inputs.state['mouse-dx'] += dx;
-    inputs.state['mouse-dy'] += dy;
+    this.state['mouse-dx'] += ev.movementX || ev.mozMovementX || ev.webkitMovementX || 0;
+    this.state['mouse-dy'] += ev.movementY || ev.mozMovementY || ev.webkitMovementY || 0;
     // TODO: verify if this is working/useful during pointerlock?
-}
+};
 
-function onMouseWheel(inputs, ev) {
+Inputs.prototype._onMouseWheel = function(ev) {
     // basically borrowed from game-shell
     var scale = 1;
     switch (ev.deltaMode) {
@@ -211,72 +258,23 @@ function onMouseWheel(inputs, ev) {
             break;  // Line
         case 2:  // page
             // TODO: investigagte when this happens, what correct handling is
-            scale = inputs.element.clientHeight || window.innerHeight;
+            scale = this.element.clientHeight || window.innerHeight;
             break;
     }
     // accumulate state
-    inputs.state['mouse-scrollx'] += ev.deltaX * scale;
-    inputs.state['mouse-scrolly'] += ev.deltaY * scale;
-    inputs.state['mouse-scrollz'] += (ev.deltaZ * scale) || 0;
+    this.state['mouse-scrollx'] += ev.deltaX * scale;
+    this.state['mouse-scrolly'] += ev.deltaY * scale;
+    this.state['mouse-scrollz'] += (ev.deltaZ * scale) || 0;
     return false;
-}
+};
 
-
-/*
- *   KEY BIND HANDLING
- */
-
-
-function handleKeyEvent(keycode, vcode, wasDown, inputs, ev) {
-    var arr = inputs._keybindmap[vcode];
-    // don't prevent defaults if there's no binding
-    if (!arr) {
-        return;
-    }
-    if (inputs.preventDefaults) {
-        ev.preventDefault();
-    }
-    if (inputs.stopPropagation) {
-        ev.stopPropagation();
-    }
-
-    // if the key's state has changed, handle an event for all bindings
-    var currstate = inputs._keyStates[keycode];
-    if (XOR(currstate, wasDown)) {
-        // for each binding: emit an event, and update cached state information
-        for (var i = 0; i < arr.length; ++i) {
-            handleBindingEvent(arr[i], wasDown, inputs, ev);
-        }
-    }
-    inputs._keyStates[keycode] = wasDown;
-}
-
-
-function handleBindingEvent(binding, wasDown, inputs, ev) {
-    // keep count of presses mapped by binding
-    // (to handle two keys with the same binding pressed at once)
-    var ct = inputs._bindPressCounts[binding] || 0;
-    ct += wasDown ? 1 : -1;
-    if (ct < 0) {
-        ct = 0;
-    } // shouldn't happen
-    inputs._bindPressCounts[binding] = ct;
-
-    // emit event if binding's state has changed
-    var currstate = inputs.state[binding];
-    if (XOR(currstate, ct)) {
-        var emitter = wasDown ? inputs.down : inputs.up;
-        emitter.emit(binding, binding, ev);
-    }
-    inputs.state[binding] = !!ct;
-}
 
 /**
  Gamepad HANDLERS
  */
 
-function handleGamePadButtonEvent(val, vcode, inputs) {
-    var arr = inputs._keybindmap[vcode];
+Inputs.prototype._handleGamePadButtonEvent = function(val, vcode) {
+    var arr = this._keybindmap[vcode];
     if (!arr) {
         return;
     }
@@ -288,101 +286,97 @@ function handleGamePadButtonEvent(val, vcode, inputs) {
         pressed = val.pressed;
         val = val.value;
         isPerc = true;
-        inputs.state[vcode] = val;
+        this.state[vcode] = val;
     } else {
-        var currstate = inputs._buttonStates[vcode];
+        var currstate = this._buttonStates[vcode];
         if (XOR(currstate, val)) {
             var i = 0;
             for (i = 0; i < arr.length; ++i) {
               console.log(arr[i],pressed);
-                handleBindingEvent(arr[i], pressed, inputs, null); // pass null as fake event
+                this._handleBindingEvent(arr[i], pressed, null); // pass null as fake event
             }
         }
     }
-}
+};
 
-function updateGamepads(inputs, extra, foo) {
-    var found = scanGamepads(inputs);
+Inputs.prototype._updateGamepads = function() {
+    var found = this._scanGamepads();
     if (!found) {
-        if (inputs._gamepadRaf) {
-            cancel(inputs._gamepadRaf);
-            inputs._gamepadRaf = false;
+        if (this._gamepadRaf) {
+            cancel(this._gamepadRaf);
+            this._gamepadRaf = false;
         }
         return;
     }
 
     var vcode = '';
-    for (var j in inputs._gamepads) {
-        var gamepad = inputs._gamepads[j];
+    for (var j in this._gamepads) {
+        var gamepad = this._gamepads[j];
 
         for (var i = 0; i < gamepad.buttons.length; i++) {
             vcode = '<gamepad-' + j + '-' + gamepadButtonNames[i] + '>';
-            handleGamePadButtonEvent(gamepad.buttons[i], vcode, inputs);
+            this._handleGamePadButtonEvent(gamepad.buttons[i], vcode);
         }
 
         for (i = 0; i < gamepad.axes.length; i++) {
             vcode = '<gamepad-' + j + '-' + gamepadAxesNames[i] + '>';
-            inputs.state[vcode] = gamepad.axes[i];
+            this.state[vcode] = gamepad.axes[i];
         }
     }
-    inputs._gamepadRaf = request( function() { updateGamepads(inputs); } );
-}
-
-function onGamepadConnected(inputs, ev) {
-    addGamepad(inputs, ev.gamepad);
-}
-
-function onGamepadDisconnected(inputs, ev) {
-    removeGamepad(inputs, ev.gamepad);
-}
-
-
-function addGamepad(inputs, gamepad) {
-    inputs._gamepads[gamepad.index] = gamepad;
-    inputs.gamepadconnected.emit(gamepad);
-    if (!inputs._gamepadRaf) {
-        inputs._gamepadRaf = request( function() { updateGamepads(inputs); } );
+    if (!this._gamepadRaf) {
+        var self = this;
+        this._gamepadRaf = request(function () {
+            self._updateGamepads();
+        });
     }
-}
+};
 
-function removeGamepad(inputs, gamepad) {
-    delete inputs._gamepads[gamepad.index];
-    inputs.gamepaddisconnected.emit(gamepad);
-    for (var j in inputs._gamepads) {
-        if (inputs._gamepads.hasOwnProperty(j)) {
+Inputs.prototype._onGamepadConnected = function(ev) {
+    this._addGamepad(ev.gamepad);
+};
+
+Inputs.prototype._onGamepadDisconnected = function(ev) {
+    this._removeGamepad(ev.gamepad);
+};
+
+
+Inputs.prototype._addGamepad = function(gamepad) {
+    this._gamepads[gamepad.index] = gamepad;
+    this.gamepadconnected.emit(gamepad);
+    if (!this._gamepadRaf) {
+        var self = this;
+        this._gamepadRaf = request( function() { self._updateGamepads(); } );
+    }
+};
+
+Inputs.prototype._removeGamepad = function(gamepad) {
+    delete this._gamepads[gamepad.index];
+    this.gamepaddisconnected.emit(gamepad);
+    for (var j in this._gamepads) {
+        if (this._gamepads.hasOwnProperty(j)) {
             return;
         }
     }
-    if (inputs._gamepadRaf) {
-        cancel(inputs._gamepadRaf);
-        inputs._gamepadRaf = false;
+    if (this._gamepadRaf) {
+        cancel(this._gamepadRaf);
+        this._gamepadRaf = false;
     }
-}
+};
 
 
-function scanGamepads(inputs) {
+Inputs.prototype._scanGamepads = function() {
     var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads() : (navigator.webkitGamePads ? navigator.webkitGamepads() : []));
     var found = false;
     for (var i = 0; i < gamepads.length; i++) {
         if (gamepads[i]) {
             found = true;
-            if (!inputs._gamepads[gamepads[i].index]) {
-                addGamepad(inputs, gamepads[i]);
+            if (!this._gamepads[gamepads[i].index]) {
+                this._addGamepad(gamepads[i]);
             } else {
-                inputs._gamepads[gamepads[i].index] = gamepads[i];
+                this._gamepads[gamepads[i].index] = gamepads[i];
             }
         }
     }
     return found;
-}
+};
 
-/*
- *    HELPERS
- *
- */
-
-
-// how is this not part of Javascript?
-function XOR(a, b) {
-    return a ? !b : b;
-}
