@@ -2,8 +2,7 @@
 
 module.exports = State;
 
-var NOOP = function () {
-};
+var NOOP = require('../utils/noop');
 
 function State(name) {
     this.name = name;

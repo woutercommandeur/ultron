@@ -2,7 +2,7 @@
 
 var StateStack = require('./statestack');
 var GameLoop = require('../timer/gameloop');
-var NOOP = function () {};
+var NOOP = require('../util/noop');
 
 module.exports = Game;
 
