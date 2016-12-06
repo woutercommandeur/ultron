@@ -9,6 +9,7 @@ exports = module.exports = Entity;
  * @constructor
  */
 function Entity(world, id) {
+  console.log(world);
   /**
    * @private
    * @property {Uint} _id
