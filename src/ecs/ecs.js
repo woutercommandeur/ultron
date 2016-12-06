@@ -403,11 +403,11 @@ World.prototype._removeComponents = function World__removeComponents(entity) {
 };
 
 
-World.prototype.getComponent = function (component) {
+World.getComponent = function (component) {
     return ComponentRegister.get(component);
 };
 
-World.prototype.registerComponent = function (component) {
+World.registerComponent = function (component) {
     return ComponentRegister.register(component);
 };
 

@@ -48,7 +48,7 @@ System.prototype.registerComponent = function System_registerComponent(type) {
 };
 
 System.prototype.getComponent = function System_getComponent(component) {
-  return this._world.getComponent(component);
+  return ecs.getComponent(component);
 };
 
 /**
