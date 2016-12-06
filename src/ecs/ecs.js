@@ -4,13 +4,10 @@ exports = module.exports = World;
 
     SIMPLE ECS BASED OF MAKR
 
-
-
-
 */
 
 
-var Entity = require('entity');
+var Entity = require('./entity');
 
 var $EMPTY_ARRAY = [];
 

@@ -1,6 +1,6 @@
-var BitSet = require('bitset'),
-    FastBitSet = require('fastbitset'),
-    ecs = require('ecs'),
+var BitSet = require('./bitset'),
+    FastBitSet = require('./fastbitset'),
+    ecs = require('./ecs'),
     NOOP = require('../util/noop');
 
 exports = module.exports = System;

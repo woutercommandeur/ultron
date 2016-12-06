@@ -1,5 +1,5 @@
-var BitSet = require('bitset'),
-    FastBitSet = require('fastbitset');
+var BitSet = require('./bitset'),
+    FastBitSet = require('./fastbitset');
 
 exports = module.exports = Entity;
 

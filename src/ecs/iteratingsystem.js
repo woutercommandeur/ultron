@@ -1,4 +1,5 @@
 var NOOP = require('../util/noop');
+var System = require('./system');
 
 exports = module.exports = IteratingSystem;
 
