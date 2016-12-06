@@ -94,11 +94,12 @@ function World() {
      */
     this._componentBags = [];
 
-    this.MAX_COMPONENTS = 32;
-    this.MAX_GROUPS = 32;
-    this.MAX_SYSTEMS = 32;
-
 }
+
+World.MAX_COMPONENTS = 32;
+World.MAX_GROUPS = 32;
+World.MAX_SYSTEMS =32;
+
 
 /**
  * Registers the specified system.

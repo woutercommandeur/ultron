@@ -163,7 +163,9 @@ Inputs.prototype.tick = function () {
 Inputs.prototype.getBoundKeys = function () {
     var arr = [];
     for (var b in this._keybindmap) {
-        arr.push(b);
+        if (this._keybindmap.hasOwnProperty(b)) {
+            arr.push(b);
+        }
     }
     return arr;
 };
@@ -354,7 +356,7 @@ Inputs.prototype._removeGamepad = function(gamepad) {
     this.gamepaddisconnected.emit(gamepad);
     for (var j in this._gamepads) {
         if (this._gamepads.hasOwnProperty(j)) {
-            return;
+                return;
         }
     }
     if (this._gamepadRaf) {
