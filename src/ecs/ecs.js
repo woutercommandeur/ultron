@@ -94,6 +94,10 @@ function World() {
      */
     this._componentBags = [];
 
+    this.MAX_COMPONENTS = World.MAX_COMPONENTS;
+    this.MAX_GROUPS = World.MAX_GROUPS;
+    this.MAX_SYSTEMS = World.MAX_SYSTEMS;
+
 }
 
 World.MAX_COMPONENTS = 32;
